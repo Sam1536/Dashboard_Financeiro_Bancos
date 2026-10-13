@@ -1,0 +1,81 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "268bc367aee74f982fc6",
+  "position": {
+    "x": 19.1496062992126,
+    "y": 96.755905511811022,
+    "z": 6001,
+    "height": 369.88976377952758,
+    "width": 548.28346456692918,
+    "tabOrder": 6001
+  },
+  "visual": {
+    "visualType": "ImageGrid_FC5183B9_926C_45E0_B5F7_0CE9EAF1DA9B",
+    "query": {
+      "queryState": {
+        "ImageURLHQ": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Movimentações"
+                    }
+                  },
+                  "Property": "Imagem"
+                }
+              },
+              "queryRef": "Movimentações.Imagem",
+              "nativeQueryRef": "Imagem"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "settings": [
+        {
+          "properties": {
+            "pRenderType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'CIRCLE'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

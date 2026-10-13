@@ -1,0 +1,74 @@
+table _Medidas
+	lineageTag: 20b8fa92-8c82-4150-b902-b5dc1cfc777e
+
+	measure Receita =
+			CALCULATE(
+			    SUM('Movimentações'[Valor da Movimentação]),
+			    'Movimentações'[Tipo] = "Recebimento"
+			)
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: e12bdd6d-1f87-4ce5-a0c6-b8429cdbb236
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure Despesas =
+			-CALCULATE(
+			    SUM('Movimentações'[Valor da Movimentação]),
+			    'Movimentações'[Tipo] = "Pagamento")
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 444de30a-7970-4f16-bac2-76358fec6339
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure Imposto = [Receita] * 0.15
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 3090c82d-2bd9-4740-813d-bb615ac30923
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure Lucro = [Receita] - [Despesas] - [Imposto]
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 8a345784-fd9b-4e0d-9334-beff4cb52199
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure Margem = [Lucro] / [Receita]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f5267c19-e788-49eb-ae35-f9dc40e704f5
+
+	measure 'Margem Auxiliar' = 1 - [Margem]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 230b9e63-b710-4957-81d3-30c43dc9b6f1
+
+	measure 'Numero de Movimentações' = COUNTROWS('Movimentações')
+		formatString: 0
+		lineageTag: 7dc069cd-ac3a-4a4c-889f-fde79147dcbd
+
+	measure 'Movimentações Pix' =
+			CALCULATE(
+			    COUNTROWS('Movimentações'),
+			    'Movimentações'[Forma Pagamento] = "Pix"
+			)
+		formatString: 0
+		lineageTag: cdb5d4a0-b1c1-4117-b644-aaf6241fadaa
+
+	measure '% Pix' = [Movimentações Pix] / [Numero de Movimentações]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 585066f9-3656-4f37-833d-61116a2d7556
+
+	measure 'Desvio Meta' = [Margem] - 0.3
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: d50ad271-448e-4883-a7e7-021dea305152
+
+	partition _Medidas = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Coluna 1", type text}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Coluna 1"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_ResultType = Table
+
